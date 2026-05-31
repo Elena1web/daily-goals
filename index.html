@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Goals Generator</title>
+    <link rel="stylesheet" href="styel.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎯 Daily Goals Generator</h1>
+        <p class="subtitle">Choose your category and start your day with clear goals</p>
+
+        <div class="categories">
+            <button class="cat-btn" onclick="selectCategory('Health', '💪')">💪 Health</button>
+            <button class="cat-btn" onclick="selectCategory('Study', '📚')">📚 Study</button>
+            <button class="cat-btn" onclick="selectCategory('Productivity', '⚡')">⚡ Productivity</button>
+        </div>
+
+        <div class="goals-section" id="goalsSection" style="display:none">
+            <h2 id="categoryTitle"></h2>
+            <div class="goals-list" id="goalsList"></div>
+            <button class="report-btn" onclick="showReport()">📊 Show My Report</button>
+        </div>
+
+        <div class="report-section" id="reportSection" style="display:none">
+            <h2>Your Daily Report 🌟</h2>
+            <p id="reportText"></p>
+            <button class="reset-btn" onclick="reset()">🔄 New Day</button>
+        </div>
+    </div>
+
+    <script>
+        const goals = {
+            'Health': [
+                'Drink 8 glasses of water',
+                'Walk for 20 minutes',
+                'Eat a healthy meal',
+                'Sleep 8 hours tonight',
+                'Stretch for 10 minutes'
+            ],
+            'Study': [
+                'Study for one hour',
+                'Review your notes',
+                'Solve 10 practice questions',
+                'Read a new chapter',
+                'Summarize what you learned today'
+            ],
+            'Productivity': [
+                'Prioritize your tasks',
+                'Do the hardest task first',
+                'Spend time without your phone',
+                'Review your weekly goals',
+                'Organize your workspace'
+            ]
+        };
+
+        let selectedGoals = [];
+
+        function selectCategory(category, emoji) {
+            const allGoals = goals[category];
+            selectedGoals = allGoals.sort(() => Math.random() - 0.5).slice(0, 3);
+
+            document.getElementById('categoryTitle').textContent = emoji + ' Your ' + category + ' Goals';
+            
+            const list = document.getElementById('goalsList');
+            list.innerHTML = '';
+            
+            selectedGoals.forEach((goal, index) => {
+                list.innerHTML += `
+                    <div class="goal-item" id="goal-${index}">
+                        <input type="checkbox" id="check-${index}" onchange="updateGoal(${index})">
+                        <label for="check-${index}">${goal}</label>
+                    </div>
+                `;
+            });
+
+            document.getElementById('goalsSection').style.display = 'block';
+            document.getElementById('reportSection').style.display = 'none';
+        }
+
+        function updateGoal(index) {
+            const item = document.getElementById(`goal-${index}`);
+            const check = document.getElementById(`check-${index}`);
+            if (check.checked) {
+                item.style.textDecoration = 'line-through';
+                item.style.opacity = '0.5';
+            } else {
+                item.style.textDecoration = 'none';
+                item.style.opacity = '1';
+            }
+        }
+
+        function showReport() {
+            let done = 0;
+            selectedGoals.forEach((_, index) => {
+                if (document.getElementById(`check-${index}`).checked) done++;
+            });
+
+            let message = '';
+            if (done === 3) message = '🌟 Amazing! You completed all your goals today!';
+            else if (done === 2) message = '💪 Great job! You completed 2 out of 3 goals!';
+            else if (done === 1) message = '😊 Good start! Tomorrow will be even better!';
+            else message = '🌙 No worries, tomorrow is a new day!';
+
+            document.getElementById('reportText').textContent = message;
+            document.getElementById('reportSection').style.display = 'block';
+        }
+
+        function reset() {
+            document.getElementById('goalsSection').style.display = 'none';
+            document.getElementById('reportSection').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
